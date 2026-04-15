@@ -1,0 +1,104 @@
+<svg viewBox="0 0 680 440" width="680" height="440" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.018)} }
+      @keyframes glow { 0%,100%{opacity:.45} 50%{opacity:.95} }
+      @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+      @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+      @keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+      @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:1} }
+      .breathe { animation: breathe 4s ease-in-out infinite; transform-origin: 340px 290px; }
+      .glow-anim { animation: glow 3s ease-in-out infinite; }
+      .float1 { animation: float1 3.4s ease-in-out infinite; }
+      .float2 { animation: float2 2.9s ease-in-out infinite 0.2s; }
+      .float3 { animation: float3 3.8s ease-in-out infinite 0.6s; }
+    </style>
+    <radialGradient id="bg2" cx="50%" cy="55%" r="65%">
+      <stop offset="0%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#0a0618"/>
+    </radialGradient>
+    <radialGradient id="glowmain" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowsm" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c4b5fd" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="680" height="440" fill="url(#bg2)"/>
+
+  <ellipse cx="100" cy="190" rx="52" ry="190" fill="#130b30" opacity="0.9"/>
+  <ellipse cx="60" cy="210" rx="36" ry="165" fill="#0f0825" opacity="0.7"/>
+  <ellipse cx="580" cy="180" rx="52" ry="195" fill="#130b30" opacity="0.9"/>
+  <ellipse cx="622" cy="210" rx="36" ry="168" fill="#0f0825" opacity="0.7"/>
+
+  <ellipse cx="340" cy="415" rx="300" ry="38" fill="#130b30"/>
+  <ellipse cx="340" cy="410" rx="230" ry="25" fill="#1a0f3a"/>
+
+  <ellipse cx="340" cy="290" rx="140" ry="115" fill="url(#glowmain)" class="glow-anim"/>
+
+  <g class="breathe">
+    <ellipse cx="340" cy="305" rx="68" ry="82" fill="#0a0618"/>
+    <ellipse cx="340" cy="195" rx="44" ry="48" fill="#0a0618"/>
+    <ellipse cx="340" cy="163" rx="40" ry="24" fill="#0a0618"/>
+    <ellipse cx="318" cy="170" rx="18" ry="28" fill="#0a0618"/>
+    <ellipse cx="362" cy="170" rx="18" ry="28" fill="#0a0618"/>
+    <path d="M325 202 Q340 216 355 202" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" class="glow-anim"/>
+    <ellipse cx="330" cy="190" rx="2.5" ry="3" fill="#c4b5fd" opacity="0.9"/>
+    <ellipse cx="350" cy="190" rx="2.5" ry="3" fill="#c4b5fd" opacity="0.9"/>
+    <path d="M282 268 Q260 275 238 295 Q218 318 222 348 Q224 362 236 358 Q248 354 246 338 Q244 318 260 302 Q278 285 292 280" fill="#0a0618"/>
+    <path d="M222 348 Q218 368 232 372 Q250 376 254 355" fill="#0a0618"/>
+    <path d="M398 268 Q420 275 442 295 Q462 318 458 348 Q456 362 444 358 Q432 354 434 338 Q436 318 420 302 Q402 285 388 280" fill="#0a0618"/>
+    <path d="M458 348 Q462 368 448 372 Q430 376 426 355" fill="#0a0618"/>
+  </g>
+
+  <g class="float1">
+    <ellipse cx="240" cy="358" rx="24" ry="29" fill="#0a0618"/>
+    <ellipse cx="240" cy="320" rx="17" ry="19" fill="#0a0618"/>
+    <ellipse cx="240" cy="310" rx="15" ry="9" fill="#0a0618"/>
+    <ellipse cx="240" cy="338" rx="20" ry="26" fill="url(#glowsm)" class="glow-anim"/>
+    <path d="M234 324 Q240 331 246 324" fill="none" stroke="#c4b5fd" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+    <ellipse cx="236" cy="317" rx="2" ry="2.5" fill="#c4b5fd" opacity="0.8"/>
+    <ellipse cx="244" cy="317" rx="2" ry="2.5" fill="#c4b5fd" opacity="0.8"/>
+  </g>
+
+  <g class="float3">
+    <ellipse cx="340" cy="368" rx="22" ry="26" fill="#0a0618"/>
+    <ellipse cx="340" cy="334" rx="16" ry="17" fill="#0a0618"/>
+    <ellipse cx="340" cy="325" rx="14" ry="8" fill="#0a0618"/>
+    <ellipse cx="340" cy="348" rx="18" ry="24" fill="url(#glowsm)" class="glow-anim"/>
+    <path d="M334 338 Q340 345 346 338" fill="none" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+    <ellipse cx="336" cy="331" rx="2" ry="2.5" fill="#e9d5ff" opacity="0.9"/>
+    <ellipse cx="344" cy="331" rx="2" ry="2.5" fill="#e9d5ff" opacity="0.9"/>
+  </g>
+
+  <g class="float2">
+    <ellipse cx="440" cy="358" rx="24" ry="29" fill="#0a0618"/>
+    <ellipse cx="440" cy="320" rx="17" ry="19" fill="#0a0618"/>
+    <ellipse cx="440" cy="310" rx="15" ry="9" fill="#0a0618"/>
+    <ellipse cx="440" cy="338" rx="20" ry="26" fill="url(#glowsm)" class="glow-anim"/>
+    <path d="M434 324 Q440 331 446 324" fill="none" stroke="#c4b5fd" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+    <ellipse cx="436" cy="317" rx="2" ry="2.5" fill="#c4b5fd" opacity="0.8"/>
+    <ellipse cx="444" cy="317" rx="2" ry="2.5" fill="#c4b5fd" opacity="0.8"/>
+  </g>
+
+  <circle cx="270" cy="145" r="2" fill="#a78bfa" style="animation:twinkle 2.1s ease-in-out infinite"/>
+  <circle cx="410" cy="125" r="1.5" fill="#c4b5fd" style="animation:twinkle 1.8s ease-in-out infinite .3s"/>
+  <circle cx="175" cy="230" r="1.5" fill="#a78bfa" style="animation:twinkle 2.4s ease-in-out infinite .6s"/>
+  <circle cx="510" cy="210" r="2" fill="#c4b5fd" style="animation:twinkle 1.6s ease-in-out infinite .9s"/>
+  <circle cx="315" cy="115" r="1" fill="#e9d5ff" style="animation:twinkle 2.8s ease-in-out infinite 1.2s"/>
+  <circle cx="385" cy="105" r="1.5" fill="#a78bfa" style="animation:twinkle 2s ease-in-out infinite .5s"/>
+  <circle cx="148" cy="165" r="1" fill="#c4b5fd" style="animation:twinkle 3s ease-in-out infinite 1s"/>
+  <circle cx="545" cy="175" r="1.5" fill="#a78bfa" style="animation:twinkle 2.2s ease-in-out infinite .2s"/>
+  <circle cx="455" cy="135" r="1" fill="#e9d5ff" style="animation:twinkle 1.9s ease-in-out infinite .8s"/>
+  <circle cx="228" cy="95" r="1.5" fill="#c4b5fd" style="animation:twinkle 2.5s ease-in-out infinite 1.4s"/>
+  <circle cx="340" cy="88" r="1" fill="#e9d5ff" style="animation:twinkle 2.3s ease-in-out infinite .7s"/>
+  <circle cx="490" cy="90" r="1.5" fill="#a78bfa" style="animation:twinkle 2.7s ease-in-out infinite 1.1s"/>
+
+  <line x1="575" y1="55" x2="618" y2="76" stroke="#c4b5fd" stroke-width="1" opacity="0.45" style="animation:twinkle 4.5s ease-in-out infinite"/>
+  <line x1="95" y1="75" x2="128" y2="90" stroke="#a78bfa" stroke-width="1" opacity="0.35" style="animation:twinkle 5.5s ease-in-out infinite 1.2s"/>
+
+  <ellipse cx="340" cy="412" rx="190" ry="16" fill="#3b1f7a" opacity="0.35"/>
+</svg>

@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  name               String
+  email              String   @unique
+  password           String
+  emailNotifications Boolean  @default(true)
+  plan               String   @default("community")
+  createdAt          DateTime @default(now())
+  polls              Poll[]
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  ownedGroups   Group[]       @relation("OwnedGroups")
+groupMembers  GroupMember[]
+}
+
+model Poll {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  creatorName  String
+  dates        String[]
+  times        Json      @default("{}")
+  votes        Json      @default("{}")
+  comments     Json      @default("{}")
+  deadline     DateTime?
+  closed       Boolean   @default(false)
+  deletedAt    DateTime?
+  notifyOnVote Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id])
+  voteOptions  String[]  @default([])
+  collectParticipantData  Boolean  @default(false)
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  ownerId     String
+  owner       User     @relation("OwnedGroups", fields: [ownerId], references: [id])
+  members     GroupMember[]
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  role     String   @default("member")
+  joinedAt DateTime @default(now())
+  group    Group    @relation(fields: [groupId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+}
