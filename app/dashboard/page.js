@@ -1,4 +1,5 @@
 "use client";
+// app/dashboard/page.js
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,9 +12,7 @@ function Icon({ name, size = 16, cls = "", strokeWidth = 1.8 }) {
     settings: <><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></>,
     trash: <><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></>,
     star: <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26" />,
-    home: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>,
     search: <><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></>,
-    logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></>,
     eye: <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>,
     share: <><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></>,
     edit: <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></>,
@@ -21,13 +20,10 @@ function Icon({ name, size = 16, cls = "", strokeWidth = 1.8 }) {
     lock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></>,
     unlock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" /></>,
     moreV: <><circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" /></>,
-    copy: <><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></>,
     restore: <><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 .49-4.16" /></>,
     oras: <><path d="M12 2a9 9 0 1 0 9 9" /><path d="M12 6v6l4 2" /></>,
     votes: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
     active: <><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></>,
-    bell: <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></>,
-    users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
@@ -45,7 +41,6 @@ function planColor(plan) {
   if (plan === "slot") return "bg-green-100 text-green-700";
   return "bg-stone-100 text-stone-500";
 }
-
 function planLabel(plan) {
   if (!plan) return "Community";
   return plan.charAt(0).toUpperCase() + plan.slice(1);
@@ -66,9 +61,7 @@ function UpcomingOraCard({ polls }) {
 
   useEffect(() => {
     if (upcomingPolls.length <= 1) return;
-    const interval = setInterval(() => {
-      setIndex(i => (i + 1) % upcomingPolls.length);
-    }, 5000);
+    const interval = setInterval(() => setIndex(i => (i + 1) % upcomingPolls.length), 5000);
     return () => clearInterval(interval);
   }, [upcomingPolls.length]);
 
@@ -95,9 +88,7 @@ function UpcomingOraCard({ polls }) {
     : null;
   const timeVal = poll.times?.[nextDate];
   const voteCount = Object.keys(poll.votes || {}).length;
-  const yesCount = nextDate
-    ? Object.values(poll.votes || {}).filter(v => v[nextDate] === "yes").length
-    : 0;
+  const yesCount = nextDate ? Object.values(poll.votes || {}).filter(v => v[nextDate] === "yes").length : 0;
 
   function getBestDates(p) {
     if (!p.votes || Object.keys(p.votes).length === 0) return [null, null];
@@ -107,12 +98,10 @@ function UpcomingOraCard({ polls }) {
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     return [sorted[0]?.[1] > 0 ? sorted[0] : null, sorted[1]?.[1] > 0 ? sorted[1] : null];
   }
-
   const [bestDate] = getBestDates(poll);
 
   return (
     <div className="bg-white border border-stone-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-      {/* Header label */}
       <div className="flex items-center justify-between px-5 pt-4 pb-2">
         <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">Upcoming</span>
         {upcomingPolls.length > 1 && (
@@ -124,14 +113,8 @@ function UpcomingOraCard({ polls }) {
           </div>
         )}
       </div>
-
-      {/* Image / fallback */}
       <a href={`/poll/${poll.id}`} className="block relative h-28 bg-gradient-to-br from-sky-100 to-sky-50 overflow-hidden mx-3 rounded-xl">
-        <img
-          src="/ora-activities-bg.png"
-          alt={poll.title}
-          className="absolute inset-0 w-full h-full object-cover rounded-xl"
-        />
+        <img src="/ora-activities-bg.png" alt={poll.title} className="absolute inset-0 w-full h-full object-cover rounded-xl" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-xl" />
         {nextDateFormatted && (
           <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur text-xs font-bold text-stone-800 px-2 py-0.5 rounded-lg">
@@ -139,44 +122,28 @@ function UpcomingOraCard({ polls }) {
           </div>
         )}
       </a>
-
-      {/* Card body */}
       <div className="px-4 pt-3 pb-4 flex-1 flex flex-col gap-2">
-        <a href={`/poll/${poll.id}`} className="text-sm font-bold text-stone-900 hover:text-sky-500 transition leading-tight line-clamp-1">
-          {poll.title}
-        </a>
-
+        <a href={`/poll/${poll.id}`} className="text-sm font-bold text-stone-900 hover:text-sky-500 transition leading-tight line-clamp-1">{poll.title}</a>
         <div className="grid grid-cols-2 gap-1.5 text-xs">
-          {/* Best date */}
           <div className="bg-sky-50 rounded-lg px-2.5 py-1.5">
             <div className="text-[10px] font-semibold text-sky-400 uppercase tracking-wide mb-0.5">Best date</div>
             <div className="font-bold text-sky-600 truncate text-[11px]">
-              {bestDate
-                ? new Date(bestDate[0] + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + (poll.times?.[bestDate[0]] ? ` · ${poll.times[bestDate[0]]}` : "")
-                : "No votes yet"}
+              {bestDate ? new Date(bestDate[0] + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + (poll.times?.[bestDate[0]] ? ` · ${poll.times[bestDate[0]]}` : "") : "No votes yet"}
             </div>
           </div>
-
-          {/* Creator */}
           <div className="bg-stone-50 rounded-lg px-2.5 py-1.5">
             <div className="text-[10px] font-semibold text-stone-400 uppercase tracking-wide mb-0.5">Creator</div>
             <div className="font-bold text-stone-700 truncate text-[11px]">{poll.creatorName}</div>
           </div>
-
-          {/* Attendance */}
           <div className="bg-emerald-50 rounded-lg px-2.5 py-1.5">
             <div className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wide mb-0.5">Attendance</div>
             <div className="font-bold text-emerald-700 text-[11px]">{yesCount} yes · {voteCount} total</div>
           </div>
-
-          {/* Reminder */}
           <div className="bg-amber-50 rounded-lg px-2.5 py-1.5">
             <div className="text-[10px] font-semibold text-amber-400 uppercase tracking-wide mb-0.5">Reminder</div>
             <div className="font-bold text-amber-600 text-[11px]">Coming soon</div>
           </div>
         </div>
-
-        {/* Notes (description) */}
         {poll.description && (
           <div className="bg-stone-50 rounded-lg px-2.5 py-1.5 text-[11px] text-stone-500">
             <span className="font-semibold text-stone-400">Notes: </span>{poll.description}
@@ -193,11 +160,12 @@ function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const upgraded = searchParams.get("upgraded");
+  const tabParam = searchParams.get("tab");
 
   const [polls, setPolls] = useState([]);
   const [binPolls, setBinPolls] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(tabParam === "bin" ? "bin" : "all");
   const [copiedId, setCopiedId] = useState(null);
   const [editingPoll, setEditingPoll] = useState(null);
   const [editForm, setEditForm] = useState({ title: "", description: "" });
@@ -209,7 +177,6 @@ function DashboardContent() {
   const [openMenu, setOpenMenu] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sharePollId, setSharePollId] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => { if (status === "unauthenticated") router.push("/login"); }, [status, router]);
@@ -251,20 +218,14 @@ function DashboardContent() {
   }
   async function handleRestore(poll) {
     try {
-      await fetch(`/api/polls/${poll.id}/delete`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "restore" }),
-      });
+      await fetch(`/api/polls/${poll.id}/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "restore" }) });
       setBinPolls(binPolls.filter(p => p.id !== poll.id));
       setPolls([{ ...poll, deletedAt: null }, ...polls]);
     } catch (e) { console.error(e); }
   }
   async function handlePermanentDelete(poll) {
     try {
-      await fetch(`/api/polls/${poll.id}/delete`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "permanent" }),
-      });
+      await fetch(`/api/polls/${poll.id}/delete`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "permanent" }) });
       setBinPolls(binPolls.filter(p => p.id !== poll.id));
       setPermanentConfirm(null);
     } catch (e) { console.error(e); }
@@ -272,10 +233,7 @@ function DashboardContent() {
   async function handleEdit(e) {
     e.preventDefault(); setSaving(true);
     try {
-      const res = await fetch(`/api/polls/${editingPoll.id}/edit`, {
-        method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editForm),
-      });
+      const res = await fetch(`/api/polls/${editingPoll.id}/edit`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(editForm) });
       const updated = await res.json();
       setPolls(polls.map(p => p.id === updated.id ? updated : p));
       setEditingPoll(null);
@@ -283,10 +241,7 @@ function DashboardContent() {
   }
   async function handleToggleClose(poll) {
     try {
-      const res = await fetch(`/api/polls/${poll.id}/edit`, {
-        method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: poll.title, description: poll.description, closed: !poll.closed }),
-      });
+      const res = await fetch(`/api/polls/${poll.id}/edit`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: poll.title, description: poll.description, closed: !poll.closed }) });
       const updated = await res.json();
       setPolls(polls.map(p => p.id === updated.id ? updated : p));
       setOpenMenu(null);
@@ -311,10 +266,6 @@ function DashboardContent() {
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     return [sorted[0]?.[1] > 0 ? sorted[0] : null, sorted[1]?.[1] > 0 ? sorted[1] : null];
   }
-  function copyLink(id) {
-    navigator.clipboard.writeText(`${window.location.origin}/poll/${id}`);
-    setCopiedId(id); setTimeout(() => setCopiedId(null), 2000); setOpenMenu(null);
-  }
   function isRecent(poll) { return new Date(poll.createdAt) > new Date(Date.now() - 7 * 864e5); }
 
   const filteredPolls = activeTab === "bin" ? binPolls : polls.filter(p => {
@@ -326,7 +277,6 @@ function DashboardContent() {
   });
   const totalVotes = polls.reduce((acc, p) => acc + Object.keys(p.votes || {}).length, 0);
   const activePolls = polls.filter(p => Object.keys(p.votes || {}).length > 0).length;
-
   const firstName = session?.user?.name?.split(" ")[0] || "there";
   const greeting =
     userPlan === "ora" ? `Welcome back, Sensei ${firstName} 🌟` :
@@ -347,13 +297,9 @@ function DashboardContent() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-[#f6f8fa] flex font-sans">
+    <>
+      {/* ══ MODALS ════════════════════════════════════════════════════════ */}
 
-      {/* ════════════════════════════════════════════════
-          MODALS
-      ════════════════════════════════════════════════ */}
-
-      {/* Edit */}
       {editingPoll && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
           <div className="bg-white rounded-2xl border border-stone-200 w-full max-w-md p-6 shadow-xl">
@@ -378,7 +324,6 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Delete confirm */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
           <div className="bg-white rounded-2xl border border-stone-200 w-full max-w-sm p-6 shadow-xl">
@@ -392,7 +337,6 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Permanent delete */}
       {permanentConfirm && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
           <div className="bg-white rounded-2xl border border-stone-200 w-full max-w-sm p-6 shadow-xl">
@@ -406,7 +350,6 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* Share modal */}
       {sharePollId && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0">
           <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
@@ -453,492 +396,285 @@ function DashboardContent() {
         </div>
       )}
 
-      {/* ════════════════════════════════════════════════
-          SIDEBAR
-      ════════════════════════════════════════════════ */}
-      <aside className="w-[220px] bg-white border-r border-stone-100 flex-col fixed h-full hidden md:flex shadow-sm z-30">
-        <div className="px-5 py-5 border-b border-stone-100">
-          <a href="/" className="flex items-center gap-2.5">
-            <img src="/logo.svg" alt="Slotora" className="w-8 h-8 rounded-xl" />
-            <span className="text-[17px] font-extrabold text-stone-900 tracking-tight">Slotora</span>
+      {/* ══ DESKTOP TOP BAR ═══════════════════════════════════════════════ */}
+      <div className="hidden md:flex sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-stone-100 px-8 h-14 items-center justify-between">
+        <div className="relative w-72">
+          <Icon name="search" size={14} cls="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <input type="text" placeholder="Search oras…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-300 bg-stone-50 placeholder:text-stone-400" />
+        </div>
+        <div className="flex items-center gap-3">
+          <a href="/create"
+            className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow-sm shadow-sky-200">
+            <Icon name="plus" size={14} /> New ora
           </a>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {[
-            { href: "/dashboard", icon: "grid", label: "Dashboard", active: true },
-            { href: "/create", icon: "plus", label: "New ora" },
-            { href: "/settings", icon: "settings", label: "Settings" },
-            { href: "/pricing", icon: "star", label: "Upgrade" },
-            { href: "/", icon: "home", label: "Homepage" },
-          ].map(({ href, icon, label, active }) => (
-            <a key={label} href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${active
-                ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                : "text-stone-500 hover:bg-stone-50 hover:text-stone-800"
-                }`}>
-              <Icon name={icon} size={15} />
-              {label}
-            </a>
-          ))}
-          <button onClick={() => setActiveTab("bin")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${activeTab === "bin"
-              ? "bg-red-50 text-red-600"
-              : "text-stone-500 hover:bg-stone-50 hover:text-stone-800"
-              }`}>
-            <Icon name="trash" size={15} />
-            Bin
-            {binPolls.length > 0 && (
-              <span className="ml-auto text-[10px] font-bold bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full">
-                {binPolls.length}
-              </span>
-            )}
-          </button>
-        </nav>
-        <div className="px-3 pb-4 border-t border-stone-100 pt-4">
-          <div className="bg-stone-50 rounded-xl p-3 mb-2">
-            <div className="flex items-center gap-2.5 mb-2">
-              <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs font-bold flex-shrink-0">
-                {session.user.name?.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-stone-800 truncate">{session.user.name}</div>
-                <div className="text-[10px] text-stone-400 truncate">{session.user.email}</div>
+      </div>
+
+      {/* ══ PAGE BODY ════════════════════════════════════════════════════ */}
+      <main className="flex-1 px-5 md:px-8 py-6 max-w-6xl mx-auto w-full">
+
+        {showUpgradeBanner && (
+          <div className="bg-sky-50 border border-sky-200 rounded-2xl px-6 py-4 mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🎉</span>
+              <div>
+                <div className="text-sm font-semibold text-sky-900">Welcome to your new plan!</div>
+                <div className="text-xs text-sky-400 mt-0.5">Your account has been upgraded successfully.</div>
               </div>
             </div>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${planColor(userPlan)}`}>
-              {planLabel(userPlan)} plan
-            </span>
-          </div>
-          <button onClick={() => signOut({ callbackUrl: "/" })}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-stone-400 hover:bg-red-50 hover:text-red-500 transition font-medium">
-            <Icon name="logout" size={13} /> Sign out
-          </button>
-        </div>
-      </aside>
-
-      {/* ════════════════════════════════════════════════
-          MAIN CONTENT
-      ════════════════════════════════════════════════ */}
-      <div className="flex-1 md:ml-[220px] flex flex-col min-h-screen">
-
-        {/* Mobile top bar */}
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-stone-100 px-5 h-14 flex items-center justify-between md:hidden">
-          <a href="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Slotora" className="w-7 h-7 rounded-lg" />
-            <span className="text-base font-extrabold text-stone-900 tracking-tight">Slotora</span>
-          </a>
-          <div className="flex items-center gap-2">
-            <a href="/create" className="text-sm bg-sky-500 text-white font-semibold px-4 py-1.5 rounded-lg">New ora</a>
-            <button onClick={() => setMobileMenuOpen(o => !o)}
-              className="w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-lg hover:bg-stone-100 transition" aria-label="Menu">
-              <span className={`block w-5 h-0.5 bg-stone-700 transition-all ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-              <span className={`block w-5 h-0.5 bg-stone-700 transition-all ${mobileMenuOpen ? "opacity-0" : ""}`} />
-              <span className={`block w-5 h-0.5 bg-stone-700 transition-all ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-            </button>
-          </div>
-        </header>
-
-        {/* Mobile nav drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40 bg-black/30" onClick={() => setMobileMenuOpen(false)}>
-            <div className="absolute top-14 left-0 right-0 bg-white border-b border-stone-100 shadow-lg px-4 py-3" onClick={e => e.stopPropagation()}>
-              <nav className="space-y-1 mb-3">
-                {[
-                  { href: "/dashboard", icon: "grid", label: "Dashboard" },
-                  { href: "/create", icon: "plus", label: "New ora" },
-                  { href: "/settings", icon: "settings", label: "Settings" },
-                  { href: "/pricing", icon: "star", label: "Upgrade" },
-                  { href: "/", icon: "home", label: "Homepage" },
-                ].map(({ href, icon, label }) => (
-                  <a key={label} href={href}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition">
-                    <Icon name={icon} size={15} />
-                    {label}
-                  </a>
-                ))}
-                <button onClick={() => { setActiveTab("bin"); setMobileMenuOpen(false); }}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-red-50 hover:text-red-600 transition">
-                  <Icon name="trash" size={15} />
-                  Bin
-                  {binPolls.length > 0 && (
-                    <span className="ml-auto text-[10px] font-bold bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full">{binPolls.length}</span>
-                  )}
-                </button>
-              </nav>
-              <div className="border-t border-stone-100 pt-3 px-3 pb-1 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs font-bold">
-                    {session.user.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-stone-800">{session.user.name}</div>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${planColor(userPlan)}`}>{planLabel(userPlan)}</span>
-                  </div>
-                </div>
-                <button onClick={() => signOut({ callbackUrl: "/" })}
-                  className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-red-500 transition font-medium px-3 py-2 rounded-xl hover:bg-red-50">
-                  <Icon name="logout" size={13} /> Sign out
-                </button>
-              </div>
-            </div>
+            <button onClick={() => setShowUpgradeBanner(false)} className="text-xs text-sky-300 hover:text-sky-500 transition ml-4">✕</button>
           </div>
         )}
 
-        {/* Desktop top bar */}
-        <div className="hidden md:flex sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-stone-100 px-8 h-14 items-center justify-between">
-          <div className="relative w-72">
-            <Icon name="search" size={14} cls="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-            <input type="text" placeholder="Search oras…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-300 bg-stone-50 placeholder:text-stone-400" />
-          </div>
-          <div className="flex items-center gap-3">
-            <a href="/create"
-              className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow-sm shadow-sky-200">
-              <Icon name="plus" size={14} /> New ora
-            </a>
-          </div>
-        </div>
-
-        {/* Page body */}
-        <main className="flex-1 px-5 md:px-8 py-6 max-w-6xl mx-auto w-full">
-
-          {showUpgradeBanner && (
-            <div className="bg-sky-50 border border-sky-200 rounded-2xl px-6 py-4 mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🎉</span>
-                <div>
-                  <div className="text-sm font-semibold text-sky-900">Welcome to your new plan!</div>
-                  <div className="text-xs text-sky-400 mt-0.5">Your account has been upgraded successfully.</div>
-                </div>
+        {/* BIN VIEW */}
+        {activeTab === "bin" ? (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-stone-900">Bin</h1>
+                <p className="text-sm text-stone-400 mt-0.5">Polls are permanently deleted after 30 days.</p>
               </div>
-              <button onClick={() => setShowUpgradeBanner(false)} className="text-xs text-sky-300 hover:text-sky-500 transition ml-4">✕</button>
+              <button onClick={() => setActiveTab("all")}
+                className="text-sm border border-stone-200 text-stone-600 px-4 py-2 rounded-xl hover:bg-stone-50 transition">← Back</button>
             </div>
-          )}
-
-          {/* ── BIN VIEW ── */}
-          {activeTab === "bin" ? (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h1 className="text-2xl font-bold text-stone-900">Bin</h1>
-                  <p className="text-sm text-stone-400 mt-0.5">Polls are permanently deleted after 30 days.</p>
-                </div>
-                <button onClick={() => setActiveTab("all")}
-                  className="text-sm border border-stone-200 text-stone-600 px-4 py-2 rounded-xl hover:bg-stone-50 transition">← Back</button>
+            {binPolls.length === 0 ? (
+              <div className="bg-white border-2 border-dashed border-stone-200 rounded-2xl p-12 text-center">
+                <div className="text-4xl mb-4">🗑</div>
+                <div className="text-lg font-semibold text-stone-700 mb-2">Bin is empty</div>
+                <div className="text-sm text-stone-400">Deleted polls appear here for 30 days.</div>
               </div>
-              {binPolls.length === 0 ? (
-                <div className="bg-white border-2 border-dashed border-stone-200 rounded-2xl p-12 text-center">
-                  <div className="text-4xl mb-4">🗑</div>
-                  <div className="text-lg font-semibold text-stone-700 mb-2">Bin is empty</div>
-                  <div className="text-sm text-stone-400">Deleted polls appear here for 30 days.</div>
-                </div>
-              ) : (
-                <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
-                  {binPolls.map((poll, i) => {
-                    const daysLeft = daysLeftInBin(poll.deletedAt);
-                    return (
-                      <div key={poll.id} className={`flex items-center gap-4 px-5 py-3.5 ${i < binPolls.length - 1 ? "border-b border-stone-100" : ""}`}>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-stone-700 truncate">{poll.title}</div>
-                          <div className="text-xs text-stone-400 mt-0.5">Deleted {formatDate(poll.deletedAt)}</div>
-                        </div>
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${daysLeft <= 3 ? "bg-red-100 text-red-600" : "bg-stone-100 text-stone-500"}`}>
-                          {daysLeft}d left
-                        </span>
-                        <button onClick={() => handleRestore(poll)} className="text-xs bg-sky-50 text-sky-600 border border-sky-200 px-3 py-1.5 rounded-lg hover:bg-sky-100 transition flex-shrink-0">Restore</button>
-                        <button onClick={() => setPermanentConfirm(poll)} className="text-xs border border-red-200 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition flex-shrink-0">Delete</button>
+            ) : (
+              <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+                {binPolls.map((poll, i) => {
+                  const daysLeft = daysLeftInBin(poll.deletedAt);
+                  return (
+                    <div key={poll.id} className={`flex items-center gap-4 px-5 py-3.5 ${i < binPolls.length - 1 ? "border-b border-stone-100" : ""}`}>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-stone-700 truncate">{poll.title}</div>
+                        <div className="text-xs text-stone-400 mt-0.5">Deleted {formatDate(poll.deletedAt)}</div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${daysLeft <= 3 ? "bg-red-100 text-red-600" : "bg-stone-100 text-stone-500"}`}>
+                        {daysLeft}d left
+                      </span>
+                      <button onClick={() => handleRestore(poll)} className="text-xs bg-sky-50 text-sky-600 border border-sky-200 px-3 py-1.5 rounded-lg hover:bg-sky-100 transition flex-shrink-0">Restore</button>
+                      <button onClick={() => setPermanentConfirm(poll)} className="text-xs border border-red-200 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition flex-shrink-0">Delete</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+        ) : (
+          <div>
+            {/* Welcome banner */}
+            <div className="relative bg-white rounded-2xl border border-stone-100 px-8 py-6 mb-6 overflow-hidden flex items-center justify-between shadow-sm">
+              <div className="absolute -top-16 -right-16 w-64 h-64 bg-sky-100 rounded-full opacity-50 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-12 -left-8 w-48 h-48 bg-teal-50 rounded-full opacity-60 blur-2xl pointer-events-none" />
+              <div className="relative z-10">
+                <h1 className="text-2xl font-extrabold text-stone-900 tracking-tight">{greeting}</h1>
+                <p className="text-sm text-stone-400 mt-1">
+                  {userPlan === "ora" ? "The master has arrived. Your oras await. 🐿️" :
+                    userPlan === "snap" ? "Everything is snapping into place." :
+                      userPlan === "slot" ? "Your slot is ready and waiting." :
+                        "Here's an overview of your oras."}
+                </p>
+              </div>
+              <img src="/superhero-ora.png" alt="Ora mascot"
+                className="relative z-10 h-28 w-auto object-contain drop-shadow-md select-none hidden sm:block" />
             </div>
 
-          ) : (
-            <div>
-
-              {/* Welcome banner */}
-              <div className="relative bg-white rounded-2xl border border-stone-100 px-8 py-6 mb-6 overflow-hidden flex items-center justify-between shadow-sm">
-                <div className="absolute -top-16 -right-16 w-64 h-64 bg-sky-100 rounded-full opacity-50 blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-12 -left-8 w-48 h-48 bg-teal-50 rounded-full opacity-60 blur-2xl pointer-events-none" />
-                <div className="relative z-10">
-                  <h1 className="text-2xl font-extrabold text-stone-900 tracking-tight">{greeting}</h1>
-                  <p className="text-sm text-stone-400 mt-1">
-                    {userPlan === "ora" ? "The master has arrived. Your oras await. 🐿️" :
-                      userPlan === "snap" ? "Everything is snapping into place." :
-                        userPlan === "slot" ? "Your slot is ready and waiting." :
-                          "Here's an overview of your oras."}
-                  </p>
+            {/* Stat cards */}
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              {[
+                { icon: "oras", label: "Total oras", value: polls.length, color: "text-sky-500", bg: "bg-sky-50" },
+                { icon: "votes", label: "Total votes", value: totalVotes, color: "text-teal-600", bg: "bg-teal-50" },
+                { icon: "active", label: "Active oras", value: activePolls, color: "text-emerald-600", bg: "bg-emerald-50" },
+              ].map(({ icon, label, value, color, bg }) => (
+                <div key={label} className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+                  <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}>
+                    <Icon name={icon} size={16} cls={color} />
+                  </div>
+                  <div className="text-3xl font-extrabold text-stone-900 tracking-tight">{value}</div>
+                  <div className="text-xs font-medium text-stone-400 mt-0.5">{label}</div>
                 </div>
-                <img src="/superhero-ora.png" alt="Ora mascot"
-                  className="relative z-10 h-28 w-auto object-contain drop-shadow-md select-none hidden sm:block" />
+              ))}
+            </div>
+
+            {/* Widget row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {/* This Week */}
+              <div className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">This Week</span>
+                  <a href="/calendar" className="text-[10px] font-semibold text-sky-500 hover:underline">View all →</a>
+                </div>
+                {polls.filter(p => {
+                  const now = new Date(); const weekEnd = new Date(now.getTime() + 7 * 864e5);
+                  return p.dates?.some(d => { const dt = new Date(d + "T00:00:00"); return dt >= now && dt <= weekEnd; });
+                }).slice(0, 3).length > 0 ? (
+                  <div className="space-y-2">
+                    {polls.filter(p => {
+                      const now = new Date(); const weekEnd = new Date(now.getTime() + 7 * 864e5);
+                      return p.dates?.some(d => { const dt = new Date(d + "T00:00:00"); return dt >= now && dt <= weekEnd; });
+                    }).slice(0, 3).map(p => {
+                      const nextDate = p.dates?.find(d => new Date(d + "T00:00:00") >= new Date());
+                      return (
+                        <a key={p.id} href={`/poll/${p.id}`} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-stone-50 transition group">
+                          <div className="w-9 h-9 rounded-xl bg-sky-50 flex flex-col items-center justify-center flex-shrink-0">
+                            <span className="text-[10px] font-bold text-sky-400 leading-none">{nextDate ? new Date(nextDate + "T00:00:00").toLocaleDateString("en-GB", { month: "short" }).toUpperCase() : "—"}</span>
+                            <span className="text-sm font-extrabold text-sky-600 leading-none">{nextDate ? new Date(nextDate + "T00:00:00").getDate() : ""}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-semibold text-stone-800 truncate group-hover:text-sky-500 transition">{p.title}</div>
+                            <div className="text-[10px] text-stone-400">{Object.keys(p.votes || {}).length} votes</div>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-4 text-center">
+                    <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center mb-2"><Icon name="oras" size={16} cls="text-stone-300" /></div>
+                    <p className="text-xs text-stone-400">No oras this week</p>
+                    <a href="/create" className="text-[11px] text-sky-500 font-semibold hover:underline mt-1">Create one →</a>
+                  </div>
+                )}
               </div>
 
-              {/* Stat cards */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <UpcomingOraCard polls={polls} />
+
+              {/* Quick actions */}
+              <div className="bg-white border border-dashed border-stone-200 rounded-2xl p-5 shadow-sm flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">Quick actions</span>
+                  <span className="text-[10px] font-semibold bg-stone-50 text-stone-400 px-2 py-0.5 rounded-full">Modular</span>
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                  <a href="/create" className="flex items-center gap-3 p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-100 transition">
+                    <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center flex-shrink-0"><Icon name="plus" size={13} cls="text-white" /></div>
+                    <span className="text-xs font-semibold text-sky-700">New ora</span>
+                  </a>
+                  <a href="/settings" className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-stone-50 border border-stone-100 transition">
+                    <div className="w-7 h-7 rounded-lg bg-stone-100 flex items-center justify-center flex-shrink-0"><Icon name="settings" size={13} cls="text-stone-500" /></div>
+                    <span className="text-xs font-semibold text-stone-600">Settings</span>
+                  </a>
+                  <a href="/pricing" className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-amber-50 border border-stone-100 hover:border-amber-100 transition">
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0"><Icon name="star" size={13} cls="text-amber-400" /></div>
+                    <span className="text-xs font-semibold text-stone-600">Upgrade plan</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Tabs + search */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-4 items-start sm:items-center">
+              <div className="relative flex-1 md:hidden">
+                <Icon name="search" size={13} cls="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input type="text" placeholder="Search oras…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-300 bg-white" />
+              </div>
+              <div className="flex gap-1 bg-stone-100 p-1 rounded-xl">
                 {[
-                  { icon: "oras", label: "Total oras", value: polls.length, color: "text-sky-500", bg: "bg-sky-50" },
-                  { icon: "votes", label: "Total votes", value: totalVotes, color: "text-teal-600", bg: "bg-teal-50" },
-                  { icon: "active", label: "Active oras", value: activePolls, color: "text-emerald-600", bg: "bg-emerald-50" },
-                ].map(({ icon, label, value, color, bg }) => (
-                  <div key={label} className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-                    <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}>
-                      <Icon name={icon} size={16} cls={color} />
-                    </div>
-                    <div className="text-3xl font-extrabold text-stone-900 tracking-tight">{value}</div>
-                    <div className="text-xs font-medium text-stone-400 mt-0.5">{label}</div>
-                  </div>
+                  { key: "all", label: `All (${polls.length})` },
+                  { key: "active", label: `Active (${activePolls})` },
+                  { key: "recent", label: "Recent" },
+                ].map(t => (
+                  <button key={t.key} onClick={() => setActiveTab(t.key)}
+                    className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition whitespace-nowrap ${activeTab === t.key ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-700"}`}>
+                    {t.label}
+                  </button>
                 ))}
               </div>
-
-              {/* ── Modular widget slots ── */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-
-                {/* Slot 1 — This Week */}
-                <div className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">This Week</span>
-                    <a href="/calendar" className="text-[10px] font-semibold text-sky-500 hover:underline">View all →</a>
-                  </div>
-                  {polls.filter(p => {
-                    const now = new Date();
-                    const weekEnd = new Date(now.getTime() + 7 * 864e5);
-                    return p.dates?.some(d => { const dt = new Date(d + "T00:00:00"); return dt >= now && dt <= weekEnd; });
-                  }).slice(0, 3).length > 0 ? (
-                    <div className="space-y-2">
-                      {polls.filter(p => {
-                        const now = new Date();
-                        const weekEnd = new Date(now.getTime() + 7 * 864e5);
-                        return p.dates?.some(d => { const dt = new Date(d + "T00:00:00"); return dt >= now && dt <= weekEnd; });
-                      }).slice(0, 3).map(p => {
-                        const nextDate = p.dates?.find(d => new Date(d + "T00:00:00") >= new Date());
-                        return (
-                          <a key={p.id} href={`/poll/${p.id}`}
-                            className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-stone-50 transition group">
-                            <div className="w-9 h-9 rounded-xl bg-sky-50 flex flex-col items-center justify-center flex-shrink-0">
-                              <span className="text-[10px] font-bold text-sky-400 leading-none">
-                                {nextDate ? new Date(nextDate + "T00:00:00").toLocaleDateString("en-GB", { month: "short" }).toUpperCase() : "—"}
-                              </span>
-                              <span className="text-sm font-extrabold text-sky-600 leading-none">
-                                {nextDate ? new Date(nextDate + "T00:00:00").getDate() : ""}
-                              </span>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-xs font-semibold text-stone-800 truncate group-hover:text-sky-500 transition">{p.title}</div>
-                              <div className="text-[10px] text-stone-400">{Object.keys(p.votes || {}).length} votes</div>
-                            </div>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-4 text-center">
-                      <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center mb-2">
-                        <Icon name="oras" size={16} cls="text-stone-300" />
-                      </div>
-                      <p className="text-xs text-stone-400">No oras this week</p>
-                      <a href="/create" className="text-[11px] text-sky-500 font-semibold hover:underline mt-1">Create one →</a>
-                    </div>
-                  )}
-                </div>
-
-                {/* Slot 2 — Upcoming ora card */}
-                <UpcomingOraCard polls={polls} />
-
-                {/* Slot 3 — Quick actions */}
-                <div className="bg-white border border-dashed border-stone-200 rounded-2xl p-5 shadow-sm flex flex-col">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">Quick actions</span>
-                    <span className="text-[10px] font-semibold bg-stone-50 text-stone-400 px-2 py-0.5 rounded-full">Modular</span>
-                  </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    <a href="/create"
-                      className="flex items-center gap-3 p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-100 transition">
-                      <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center flex-shrink-0">
-                        <Icon name="plus" size={13} cls="text-white" />
-                      </div>
-                      <span className="text-xs font-semibold text-sky-700">New ora</span>
-                    </a>
-                    <a href="/settings"
-                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-stone-50 border border-stone-100 transition">
-                      <div className="w-7 h-7 rounded-lg bg-stone-100 flex items-center justify-center flex-shrink-0">
-                        <Icon name="settings" size={13} cls="text-stone-500" />
-                      </div>
-                      <span className="text-xs font-semibold text-stone-600">Settings</span>
-                    </a>
-                    <a href="/pricing"
-                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-amber-50 border border-stone-100 hover:border-amber-100 transition">
-                      <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                        <Icon name="star" size={13} cls="text-amber-400" />
-                      </div>
-                      <span className="text-xs font-semibold text-stone-600">Upgrade plan</span>
-                    </a>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Tabs */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-4 items-start sm:items-center">
-                <div className="relative flex-1 md:hidden">
-                  <Icon name="search" size={13} cls="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                  <input type="text" placeholder="Search oras…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-300 bg-white" />
-                </div>
-                <div className="flex gap-1 bg-stone-100 p-1 rounded-xl">
-                  {[
-                    { key: "all", label: `All (${polls.length})` },
-                    { key: "active", label: `Active (${activePolls})` },
-                    { key: "recent", label: "Recent" },
-                  ].map(t => (
-                    <button key={t.key} onClick={() => setActiveTab(t.key)}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition whitespace-nowrap ${activeTab === t.key
-                        ? "bg-white text-stone-900 shadow-sm"
-                        : "text-stone-500 hover:text-stone-700"
-                        }`}>
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Polls table */}
-              {filteredPolls.length === 0 ? (
-                <div className="bg-white border-2 border-dashed border-stone-200 rounded-2xl p-12 text-center">
-                  <img src="/superhero-ora.png" alt="" className="w-24 h-auto mx-auto mb-4 opacity-60" />
-                  <div className="text-lg font-bold text-stone-700 mb-2">
-                    {searchQuery ? "No oras match your search" : activeTab === "all" ? "No oras yet" : "No oras in this category"}
-                  </div>
-                  <div className="text-sm text-stone-400 mb-6">
-                    {searchQuery ? "Try a different search term." : activeTab === "all" ? "Create your first ora and start collecting votes." : "Try a different filter above."}
-                  </div>
-                  {activeTab === "all" && !searchQuery && (
-                    <a href="/create" className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-6 py-3 rounded-xl transition">
-                      <Icon name="plus" size={14} /> Create your first ora
-                    </a>
-                  )}
-                </div>
-              ) : (
-                <div className="bg-white rounded-2xl border border-stone-100 shadow-sm">
-                  <div className="grid grid-cols-12 gap-1 px-5 py-3 bg-stone-50 border-b border-stone-100 rounded-t-2xl text-[10px] font-bold text-stone-400 uppercase tracking-widest">
-                    <div className="col-span-1 text-center">#</div>
-                    <div className="col-span-4">Name</div>
-                    <div className="col-span-2 text-center">Best date</div>
-                    <div className="col-span-2 text-center">2nd date</div>
-                    <div className="col-span-1 text-center">Votes</div>
-                    <div className="col-span-1 text-center">Status</div>
-                    <div className="col-span-1 text-center">•••</div>
-                  </div>
-
-                  {filteredPolls.map((poll, i) => {
-                    const voteCount = Object.keys(poll.votes || {}).length;
-                    const [bestDate, secondDate] = getBestDates(poll);
-                    const isMenuOpen = openMenu === poll.id;
-                    const isNearBottom = i >= filteredPolls.length - 2;
-
-                    return (
-                      <div key={poll.id}
-                        className={`grid grid-cols-12 gap-2 px-5 py-3.5 items-center hover:bg-stone-50 transition group ${i < filteredPolls.length - 1 ? "border-b border-stone-100" : ""} ${i === filteredPolls.length - 1 ? "rounded-b-2xl" : ""}`}>
-
-                        <div className="col-span-1 text-center text-xs font-semibold text-stone-300">{i + 1}</div>
-
-                        <div className="col-span-4 min-w-0">
-                          <a href={`/poll/${poll.id}`} className="text-sm font-semibold text-stone-800 hover:text-sky-500 transition truncate block">
-                            {poll.title}
-                          </a>
-                          {poll.description && (
-                            <div className="text-xs text-stone-400 truncate mt-0.5">{poll.description}</div>
-                          )}
-                        </div>
-
-                        <div className="col-span-2 text-center">
-                          {bestDate ? (
-                            <div>
-                              <div className="text-xs font-bold text-sky-500">{formatPollDate(bestDate[0], poll.times)}</div>
-                              <div className="text-[10px] text-stone-400">{bestDate[1]} yes</div>
-                            </div>
-                          ) : <span className="text-xs text-stone-200">—</span>}
-                        </div>
-
-                        <div className="col-span-2 text-center">
-                          {secondDate ? (
-                            <div>
-                              <div className="text-xs font-medium text-stone-500">{formatPollDate(secondDate[0], poll.times)}</div>
-                              <div className="text-[10px] text-stone-400">{secondDate[1]} yes</div>
-                            </div>
-                          ) : <span className="text-xs text-stone-200">—</span>}
-                        </div>
-
-                        <div className="col-span-1 text-center">
-                          <span className={`text-sm font-extrabold ${voteCount > 0 ? "text-sky-500" : "text-stone-200"}`}>
-                            {voteCount}
-                          </span>
-                        </div>
-
-                        <div className="col-span-1 text-center">
-                          {poll.closed ? (
-                            <span className="inline-block text-[10px] font-semibold bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">Closed</span>
-                          ) : (
-                            <span className="inline-block text-[10px] font-semibold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full">Open</span>
-                          )}
-                        </div>
-
-                        <div className="col-span-1 text-center relative" ref={isMenuOpen ? menuRef : null}>
-                          <button
-                            onClick={() => setOpenMenu(isMenuOpen ? null : poll.id)}
-                            className="w-7 h-7 rounded-lg border border-stone-200 hover:bg-stone-100 hover:border-stone-300 transition flex items-center justify-center mx-auto text-stone-400 hover:text-stone-600">
-                            <Icon name="moreV" size={13} />
-                          </button>
-                          {isMenuOpen && (
-                            <div className={`absolute right-0 ${isNearBottom ? "bottom-full mb-1" : "top-9"} bg-white border border-stone-200 rounded-xl shadow-xl z-50 w-44 py-1 text-left`}>
-                              <a href={`/poll/${poll.id}`}
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
-                                <Icon name="eye" size={13} /> View
-                              </a>
-                              <button onClick={() => { setSharePollId(poll.id); setOpenMenu(null); }}
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
-                                <Icon name="share" size={13} /> Share via
-                              </button>
-                              <button onClick={() => openEdit(poll)}
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
-                                <Icon name="edit" size={13} /> Edit
-                              </button>
-                              {["slot", "snap", "ora"].includes(userPlan) ? (
-                                <a href={`/api/polls/${poll.id}/export`}
-                                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
-                                  <Icon name="download" size={13} /> Export CSV
-                                </a>
-                              ) : (
-                                <a href="/pricing"
-                                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-400 hover:bg-stone-50 transition">
-                                  <Icon name="download" size={13} /> Export CSV ↑
-                                </a>
-                              )}
-                              <button onClick={() => handleToggleClose(poll)}
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
-                                <Icon name={poll.closed ? "unlock" : "lock"} size={13} />
-                                {poll.closed ? "Reopen" : "Close"}
-                              </button>
-                              <div className="border-t border-stone-100 my-1" />
-                              <button onClick={() => { setDeleteConfirm(poll); setOpenMenu(null); }}
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition">
-                                <Icon name="trash" size={13} /> Delete
-                              </button>
-                            </div>
-                          )}
-                        </div>
-
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
-          )}
 
-        </main>
-      </div>
-    </div>
+            {/* Polls table */}
+            {filteredPolls.length === 0 ? (
+              <div className="bg-white border-2 border-dashed border-stone-200 rounded-2xl p-12 text-center">
+                <img src="/superhero-ora.png" alt="" className="w-24 h-auto mx-auto mb-4 opacity-60" />
+                <div className="text-lg font-bold text-stone-700 mb-2">
+                  {searchQuery ? "No oras match your search" : activeTab === "all" ? "No oras yet" : "No oras in this category"}
+                </div>
+                <div className="text-sm text-stone-400 mb-6">
+                  {searchQuery ? "Try a different search term." : activeTab === "all" ? "Create your first ora and start collecting votes." : "Try a different filter above."}
+                </div>
+                {activeTab === "all" && !searchQuery && (
+                  <a href="/create" className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-6 py-3 rounded-xl transition">
+                    <Icon name="plus" size={14} /> Create your first ora
+                  </a>
+                )}
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm">
+                <div className="grid grid-cols-12 gap-1 px-5 py-3 bg-stone-50 border-b border-stone-100 rounded-t-2xl text-[10px] font-bold text-stone-400 uppercase tracking-widest">
+                  <div className="col-span-1 text-center">#</div>
+                  <div className="col-span-4">Name</div>
+                  <div className="col-span-2 text-center">Best date</div>
+                  <div className="col-span-2 text-center">2nd date</div>
+                  <div className="col-span-1 text-center">Votes</div>
+                  <div className="col-span-1 text-center">Status</div>
+                  <div className="col-span-1 text-center">•••</div>
+                </div>
+                {filteredPolls.map((poll, i) => {
+                  const voteCount = Object.keys(poll.votes || {}).length;
+                  const [bestDate, secondDate] = getBestDates(poll);
+                  const isMenuOpen = openMenu === poll.id;
+                  const isNearBottom = i >= filteredPolls.length - 2;
+                  return (
+                    <div key={poll.id}
+                      className={`grid grid-cols-12 gap-2 px-5 py-3.5 items-center hover:bg-stone-50 transition group ${i < filteredPolls.length - 1 ? "border-b border-stone-100" : ""} ${i === filteredPolls.length - 1 ? "rounded-b-2xl" : ""}`}>
+                      <div className="col-span-1 text-center text-xs font-semibold text-stone-300">{i + 1}</div>
+                      <div className="col-span-4 min-w-0">
+                        <a href={`/poll/${poll.id}`} className="text-sm font-semibold text-stone-800 hover:text-sky-500 transition truncate block">{poll.title}</a>
+                        {poll.description && <div className="text-xs text-stone-400 truncate mt-0.5">{poll.description}</div>}
+                      </div>
+                      <div className="col-span-2 text-center">
+                        {bestDate ? (<div><div className="text-xs font-bold text-sky-500">{formatPollDate(bestDate[0], poll.times)}</div><div className="text-[10px] text-stone-400">{bestDate[1]} yes</div></div>) : <span className="text-xs text-stone-200">—</span>}
+                      </div>
+                      <div className="col-span-2 text-center">
+                        {secondDate ? (<div><div className="text-xs font-medium text-stone-500">{formatPollDate(secondDate[0], poll.times)}</div><div className="text-[10px] text-stone-400">{secondDate[1]} yes</div></div>) : <span className="text-xs text-stone-200">—</span>}
+                      </div>
+                      <div className="col-span-1 text-center">
+                        <span className={`text-sm font-extrabold ${voteCount > 0 ? "text-sky-500" : "text-stone-200"}`}>{voteCount}</span>
+                      </div>
+                      <div className="col-span-1 text-center">
+                        {poll.closed
+                          ? <span className="inline-block text-[10px] font-semibold bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">Closed</span>
+                          : <span className="inline-block text-[10px] font-semibold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full">Open</span>}
+                      </div>
+                      <div className="col-span-1 text-center relative" ref={isMenuOpen ? menuRef : null}>
+                        <button onClick={() => setOpenMenu(isMenuOpen ? null : poll.id)}
+                          className="w-7 h-7 rounded-lg border border-stone-200 hover:bg-stone-100 hover:border-stone-300 transition flex items-center justify-center mx-auto text-stone-400 hover:text-stone-600">
+                          <Icon name="moreV" size={13} />
+                        </button>
+                        {isMenuOpen && (
+                          <div className={`absolute right-0 ${isNearBottom ? "bottom-full mb-1" : "top-9"} bg-white border border-stone-200 rounded-xl shadow-xl z-50 w-44 py-1 text-left`}>
+                            <a href={`/poll/${poll.id}`} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition"><Icon name="eye" size={13} /> View</a>
+                            <button onClick={() => { setSharePollId(poll.id); setOpenMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition"><Icon name="share" size={13} /> Share via</button>
+                            <button onClick={() => openEdit(poll)} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition"><Icon name="edit" size={13} /> Edit</button>
+                            {["slot", "snap", "ora"].includes(userPlan) ? (
+                              <a href={`/api/polls/${poll.id}/export`} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition"><Icon name="download" size={13} /> Export CSV</a>
+                            ) : (
+                              <a href="/pricing" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-400 hover:bg-stone-50 transition"><Icon name="download" size={13} /> Export CSV ↑</a>
+                            )}
+                            <button onClick={() => handleToggleClose(poll)} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 transition">
+                              <Icon name={poll.closed ? "unlock" : "lock"} size={13} />{poll.closed ? "Reopen" : "Close"}
+                            </button>
+                            <div className="border-t border-stone-100 my-1" />
+                            <button onClick={() => { setDeleteConfirm(poll); setOpenMenu(null); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition"><Icon name="trash" size={13} /> Delete</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+    </>
   );
 }
 

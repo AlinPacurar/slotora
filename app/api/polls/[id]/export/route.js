@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getActivePlan } from "@/lib/planUtils";
 
 export async function GET(request, { params }) {
   try {
@@ -24,7 +25,7 @@ export async function GET(request, { params }) {
 
     // Check plan — CSV export is Slot+ only
     const allowedPlans = ["slot", "snap", "ora"];
-    if (!allowedPlans.includes(user.plan)) {
+    if (!allowedPlans.includes(getActivePlan(user))) {
       return NextResponse.json(
         { error: "CSV export is available on Slot, Snap and Ora plans" },
         { status: 403 }

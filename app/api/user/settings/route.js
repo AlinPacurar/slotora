@@ -12,7 +12,14 @@ export async function GET() {
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
+      select: {
+        name: true,
+        email: true,
+        emailNotifications: true,
+        plan: true,
+        planExpiresAt: true,
+      },
     });
 
     if (!user) {
@@ -24,19 +31,7 @@ export async function GET() {
       email: user.email,
       emailNotifications: user.emailNotifications,
       plan: user.plan,
-    });
-
-    return NextResponse.json({
-      name: user.name,
-      email: user.email,
-      emailNotifications: user.emailNotifications,
-      plan: user.plan,
-    });
-
-    return NextResponse.json({
-      name: user.name,
-      email: user.email,
-      emailNotifications: user.emailNotifications,
+      planExpiresAt: user.planExpiresAt,
     });
   } catch (error) {
     console.error(error);

@@ -8,49 +8,51 @@ datasource db {
 }
 
 model User {
-  id                 String   @id @default(cuid())
-  name               String
-  email              String   @unique
-  password           String
-  emailNotifications Boolean  @default(true)
-  plan               String   @default("community")
-  createdAt          DateTime @default(now())
-  polls              Poll[]
-  stripeCustomerId      String?
-  stripeSubscriptionId  String?
-  ownedGroups   Group[]       @relation("OwnedGroups")
-groupMembers  GroupMember[]
+  id                   String              @id @default(cuid())
+  name                 String
+  email                String              @unique
+  password             String
+  emailNotifications   Boolean             @default(true)
+  plan                 String              @default("community")
+  planExpiresAt        DateTime?
+  createdAt            DateTime            @default(now())
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  polls                Poll[]
+  ownedGroups          Group[]             @relation("OwnedGroups")
+  groupMembers         GroupMember[]
+  voucherRedemptions   VoucherRedemption[]
 }
 
 model Poll {
-  id           String    @id @default(cuid())
-  title        String
-  description  String?
-  creatorName  String
-  dates        String[]
-  deviceVotes  Json      @default("{}")
-  ipVotes      Json      @default("{}")
-  times        Json      @default("{}")
-  votes        Json      @default("{}")
-  comments     Json      @default("{}")
-  deadline     DateTime?
-  closed       Boolean   @default(false)
-  deletedAt    DateTime?
-  notifyOnVote Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  userId       String?
-  user         User?     @relation(fields: [userId], references: [id])
-  voteOptions  String[]  @default([])
-  collectParticipantData  Boolean  @default(false)
+  id                     String    @id @default(cuid())
+  title                  String
+  description            String?
+  creatorName            String
+  dates                  String[]
+  deviceVotes            Json      @default("{}")
+  ipVotes                Json      @default("{}")
+  times                  Json      @default("{}")
+  votes                  Json      @default("{}")
+  comments               Json      @default("{}")
+  deadline               DateTime?
+  closed                 Boolean   @default(false)
+  deletedAt              DateTime?
+  notifyOnVote           Boolean   @default(true)
+  createdAt              DateTime  @default(now())
+  userId                 String?
+  user                   User?     @relation(fields: [userId], references: [id])
+  voteOptions            String[]  @default([])
+  collectParticipantData Boolean   @default(false)
 }
 
 model Group {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime      @default(now())
   ownerId     String
-  owner       User     @relation("OwnedGroups", fields: [ownerId], references: [id])
+  owner       User          @relation("OwnedGroups", fields: [ownerId], references: [id])
   members     GroupMember[]
 }
 
@@ -62,4 +64,30 @@ model GroupMember {
   joinedAt DateTime @default(now())
   group    Group    @relation(fields: [groupId], references: [id])
   user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([groupId, userId])
+}
+
+model Voucher {
+  id           String              @id @default(cuid())
+  code         String              @unique
+  plan         String
+  durationDays Int
+  maxUses      Int                 @default(1)
+  usedCount    Int                 @default(0)
+  createdBy    String
+  createdAt    DateTime            @default(now())
+  expiresAt    DateTime?
+  redemptions  VoucherRedemption[]
+}
+
+model VoucherRedemption {
+  id         String   @id @default(cuid())
+  voucherId  String
+  userId     String
+  redeemedAt DateTime @default(now())
+  voucher    Voucher  @relation(fields: [voucherId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([voucherId, userId])
 }
