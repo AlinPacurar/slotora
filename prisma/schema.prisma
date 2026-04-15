@@ -28,6 +28,8 @@ model Poll {
   description  String?
   creatorName  String
   dates        String[]
+  deviceVotes  Json      @default("{}")
+  ipVotes      Json      @default("{}")
   times        Json      @default("{}")
   votes        Json      @default("{}")
   comments     Json      @default("{}")
