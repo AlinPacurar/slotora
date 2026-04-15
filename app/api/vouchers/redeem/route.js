@@ -4,7 +4,9 @@ import { prisma } from "@/lib/db";
 
 export async function POST(req) {
     const session = await auth();
-    if (!session?.user?.id) {
+
+    // Support both id and email lookup — belt and braces
+    if (!session?.user?.id && !session?.user?.email) {
         return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -12,6 +14,20 @@ export async function POST(req) {
     if (!code?.trim()) {
         return Response.json({ error: "No voucher code provided." }, { status: 400 });
     }
+
+    // Look up user by id first, fall back to email
+    const user = await prisma.user.findUnique({
+        where: session.user.id
+            ? { id: session.user.id }
+            : { email: session.user.email },
+        select: { id: true, planExpiresAt: true, plan: true },
+    });
+
+    if (!user) {
+        return Response.json({ error: "User not found." }, { status: 404 });
+    }
+
+    const userId = user.id;
 
     const voucher = await prisma.voucher.findUnique({
         where: { code: code.trim().toUpperCase() },
@@ -28,17 +44,12 @@ export async function POST(req) {
         return Response.json({ error: "This voucher has already been fully redeemed." }, { status: 409 });
     }
 
-    const alreadyUsed = voucher.redemptions.some(r => r.userId === session.user.id);
+    const alreadyUsed = voucher.redemptions.some(r => r.userId === userId);
     if (alreadyUsed) {
         return Response.json({ error: "You've already redeemed this voucher." }, { status: 409 });
     }
 
     // Extend from current expiry if user already has time remaining, otherwise from now
-    const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { planExpiresAt: true, plan: true },
-    });
-
     const baseDate =
         user.planExpiresAt && new Date(user.planExpiresAt) > new Date()
             ? new Date(user.planExpiresAt)
@@ -48,11 +59,11 @@ export async function POST(req) {
 
     await prisma.$transaction([
         prisma.user.update({
-            where: { id: session.user.id },
+            where: { id: userId },
             data: { plan: voucher.plan, planExpiresAt: newExpiry },
         }),
         prisma.voucherRedemption.create({
-            data: { voucherId: voucher.id, userId: session.user.id },
+            data: { voucherId: voucher.id, userId },
         }),
         prisma.voucher.update({
             where: { id: voucher.id },
