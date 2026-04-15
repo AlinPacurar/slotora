@@ -2,11 +2,9 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
-// ⚠️  Add your own email here
-const ADMIN_EMAILS = ["alinepacurar@gmail.com"];
+const ADMIN_EMAILS = ["alinpacurar@slotora.app"];
 
 function generateCode(length = 10) {
-    // Excludes confusable characters: 0/O, 1/I/L
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     return Array.from(
         { length },
@@ -23,8 +21,8 @@ export async function POST(req) {
 
     const { plan, durationDays, maxUses = 1, expiresInDays } = await req.json();
 
-    if (!["snap", "ora"].includes(plan)) {
-        return Response.json({ error: "Invalid plan. Must be snap or ora." }, { status: 400 });
+    if (!["slot", "snap", "ora"].includes(plan)) {
+        return Response.json({ error: "Invalid plan." }, { status: 400 });
     }
     if (!durationDays || durationDays < 1) {
         return Response.json({ error: "durationDays must be at least 1." }, { status: 400 });
@@ -32,24 +30,17 @@ export async function POST(req) {
 
     const code = generateCode();
     const expiresAt = expiresInDays
-        ? new Date(Date.now() + expiresInDays * 86400000)
+        ? new Date(Date.now() + Number(expiresInDays) * 86400000)
         : null;
 
     const voucher = await prisma.voucher.create({
-        data: {
-            code,
-            plan,
-            durationDays,
-            maxUses,
-            createdBy: session.user.email,
-            expiresAt,
-        },
+        data: { code, plan, durationDays: Number(durationDays), maxUses: Number(maxUses), createdBy: session.user.email, expiresAt },
     });
 
     return Response.json(voucher, { status: 201 });
 }
 
-// GET — list all vouchers with redemption counts
+// GET — list all vouchers
 export async function GET() {
     const session = await auth();
     if (!ADMIN_EMAILS.includes(session?.user?.email)) {
