@@ -12,16 +12,17 @@ model User {
   name                 String
   email                String              @unique
   password             String
+  createdAt            DateTime            @default(now())
   emailNotifications   Boolean             @default(true)
   plan                 String              @default("community")
-  planExpiresAt        DateTime?
-  createdAt            DateTime            @default(now())
   stripeCustomerId     String?
   stripeSubscriptionId String?
-  polls                Poll[]
+  planExpiresAt        DateTime?
   ownedGroups          Group[]             @relation("OwnedGroups")
   groupMembers         GroupMember[]
+  polls                Poll[]
   voucherRedemptions   VoucherRedemption[]
+  sentInvites GroupInvite[] @relation("SentInvites")
 }
 
 model Poll {
@@ -30,20 +31,20 @@ model Poll {
   description            String?
   creatorName            String
   dates                  String[]
-  deviceVotes            Json      @default("{}")
-  ipVotes                Json      @default("{}")
-  times                  Json      @default("{}")
   votes                  Json      @default("{}")
-  comments               Json      @default("{}")
-  deadline               DateTime?
-  closed                 Boolean   @default(false)
-  deletedAt              DateTime?
-  notifyOnVote           Boolean   @default(true)
   createdAt              DateTime  @default(now())
   userId                 String?
-  user                   User?     @relation(fields: [userId], references: [id])
+  closed                 Boolean   @default(false)
+  comments               Json      @default("{}")
+  deadline               DateTime?
+  deletedAt              DateTime?
+  notifyOnVote           Boolean   @default(true)
   voteOptions            String[]  @default([])
   collectParticipantData Boolean   @default(false)
+  times                  Json      @default("{}")
+  deviceVotes            Json      @default("{}")
+  ipVotes                Json      @default("{}")
+  user                   User?     @relation(fields: [userId], references: [id])
 }
 
 model Group {
@@ -52,20 +53,43 @@ model Group {
   description String?
   createdAt   DateTime      @default(now())
   ownerId     String
+  slug        String        @unique
+  isPublic    Boolean       @default(false)
+  inviteCode  String        @unique
+  joinPolicy  String        @default("request")
+  avatarUrl   String?
   owner       User          @relation("OwnedGroups", fields: [ownerId], references: [id])
   members     GroupMember[]
+  invites     GroupInvite[]
+  
 }
 
 model GroupMember {
-  id       String   @id @default(cuid())
-  groupId  String
-  userId   String
-  role     String   @default("member")
-  joinedAt DateTime @default(now())
-  group    Group    @relation(fields: [groupId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
+  id           String   @id @default(cuid())
+  groupId      String
+  userId       String
+  role         String   @default("member")
+  joinedAt     DateTime @default(now())
+  status       String   @default("active")
+  invitedEmail String?
+  group        Group    @relation(fields: [groupId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
 
   @@unique([groupId, userId])
+}
+
+model GroupInvite {
+  id        String    @id @default(uuid())
+  token     String    @unique @default(uuid())
+  groupId   String
+  email     String
+  role      String    @default("member")
+  invitedBy String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  inviter   User      @relation("SentInvites", fields: [invitedBy], references: [id], onDelete: Cascade)
 }
 
 model Voucher {
@@ -86,8 +110,8 @@ model VoucherRedemption {
   voucherId  String
   userId     String
   redeemedAt DateTime @default(now())
-  voucher    Voucher  @relation(fields: [voucherId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+  voucher    Voucher  @relation(fields: [voucherId], references: [id])
 
   @@unique([voucherId, userId])
 }

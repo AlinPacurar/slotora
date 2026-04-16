@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { planCanCreateGroup, planGroupLimit } from "@/lib/teamRoles";
 import { getActivePlan } from "@/lib/planUtils";
+import { generateSlug, generateInviteCode } from "@/lib/groupUtils";
 
 export async function GET() {
     const session = await auth();
@@ -64,14 +65,31 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { name, description } = body;
+    const { name, description, isPublic, joinPolicy } = body;
 
     if (!name?.trim()) return Response.json({ error: "Group name is required." }, { status: 400 });
+
+    // Generate unique slug (retry once on collision)
+    let slug = generateSlug(name);
+    const slugExists = await prisma.group.findUnique({ where: { slug } });
+    if (slugExists) slug = generateSlug(name);
+
+    // Generate unique invite code
+    let inviteCode = generateInviteCode();
+    let codeExists = await prisma.group.findUnique({ where: { inviteCode } });
+    while (codeExists) {
+        inviteCode = generateInviteCode();
+        codeExists = await prisma.group.findUnique({ where: { inviteCode } });
+    }
 
     const group = await prisma.group.create({
         data: {
             name: name.trim(),
             description: description?.trim() || null,
+            slug,
+            inviteCode,
+            isPublic: isPublic ?? false,
+            joinPolicy: joinPolicy ?? "request",
             ownerId: userId,
             members: {
                 create: { userId, role: "owner" },

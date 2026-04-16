@@ -17,7 +17,7 @@ export async function POST(req, { params }) {
     const session = await auth();
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { groupId } = params;
+    const { groupId } = await params;
     const actorId = session.user.id;
     const actorRole = await getActorRole(groupId, actorId);
 

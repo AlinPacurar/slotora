@@ -14,7 +14,7 @@ export async function GET(_, { params }) {
     const session = await auth();
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { groupId } = params;
+    const { groupId } = await params;
     const actorRole = await getActorRole(groupId, session.user.id);
     if (!actorRole) return Response.json({ error: "Not a member" }, { status: 403 });
 
@@ -37,16 +37,21 @@ export async function PATCH(req, { params }) {
     const session = await auth();
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { groupId } = params;
+    const { groupId } = await params;
     const actorRole = await getActorRole(groupId, session.user.id);
     if (!actorRole || roleRank(actorRole) > roleRank("admin")) {
         return Response.json({ error: "Insufficient permissions" }, { status: 403 });
     }
 
-    const { name, description } = await req.json();
+    const { name, description, isPublic, joinPolicy } = await req.json();
     const group = await prisma.group.update({
         where: { id: groupId },
-        data: { name: name?.trim(), description: description?.trim() ?? null },
+        data: {
+            name: name?.trim(),
+            description: description?.trim() ?? null,
+            ...(isPublic !== undefined && { isPublic }),
+            ...(joinPolicy !== undefined && { joinPolicy }),
+        },
     });
 
     return Response.json(group);
@@ -56,7 +61,7 @@ export async function DELETE(_, { params }) {
     const session = await auth();
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { groupId } = params;
+    const { groupId } = await params;
     const actorRole = await getActorRole(groupId, session.user.id);
     if (actorRole !== "owner") return Response.json({ error: "Only the owner can delete a group" }, { status: 403 });
 
